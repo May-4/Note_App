@@ -22,7 +22,6 @@ const Home = ({ navigation }) => {
     setSelectedCategory(value);
   }
   //Update Set Value
-
   
   return (
     <SafeAreaView style={{ marginHorizontal: 15, }}>

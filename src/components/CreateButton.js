@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { noteContents } from '../util/constant';
 
 const CreateButton = ({ newNote, navigation }) => {
 
@@ -19,8 +18,7 @@ const CreateButton = ({ newNote, navigation }) => {
       console.error('Error adding note:', error);
     }
 
-    //await AsyncStorage.removeItem('notes');
-    //await AsyncStorage.setItem('notes', JSON.stringify(noteContents)); 
+    //await AsyncStorage.removeItem('notes'); 
     //return;
 
   }

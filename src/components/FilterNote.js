@@ -1,7 +1,7 @@
 import { Text, View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { colors } from '../util/constant';
+import { colors,noteLists } from '../util/constant';
 import { useIsFocused } from '@react-navigation/native';
 
 const FilterNote = ({ search, category }) => {
@@ -10,10 +10,14 @@ const FilterNote = ({ search, category }) => {
   const [noteContentsFilters, setNoteContentsFilters] = useState([]);
   const noteList = async () => {
     try {
-
+      
       const existingNotes = await AsyncStorage.getItem("notes");
-      const noteContents = existingNotes ? JSON.parse(existingNotes) : [];
 
+      if (!existingNotes) {
+        await AsyncStorage.setItem('notes', JSON.stringify(noteLists));
+      }
+      const noteContents = existingNotes ? JSON.parse(existingNotes) : [];
+      
       const filters = noteContents.filter((note) => {
         const noteItem = note.content.toLowerCase() + note.title.toLowerCase();
         const searchbyContent = noteItem.includes(search.toLowerCase().trim());
@@ -66,7 +70,7 @@ const FilterNote = ({ search, category }) => {
       renderItem={renderNoteItem}
       contentContainerStyle={styles.noteList}
       showsVerticalScrollIndicator={false}
-      style={{ height: '70%' }}
+      style={{ height: '70%'}}
     />
   )
 }

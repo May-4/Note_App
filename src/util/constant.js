@@ -1,4 +1,4 @@
-export const noteContents = [
+export const noteLists = [
   {
     title: 'Team Meeting',
     content: 'In this example, each category item in the FlatList is given a fixed height and styled to have a padding, margin, and a background color. The horizontal prop is set on the FlatList',
