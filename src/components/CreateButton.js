@@ -9,7 +9,6 @@ const CreateButton = ({ newNote, navigation }) => {
       const existingNotes = await AsyncStorage.getItem("notes");
 
       const notesArr = existingNotes ? JSON.parse(existingNotes) : [];
-      newNote.id = notesArr.length + 1;
       notesArr.unshift(newNote);
      
       await AsyncStorage.setItem('notes', JSON.stringify(notesArr));

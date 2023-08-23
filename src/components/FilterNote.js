@@ -8,11 +8,12 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 const FilterNote = ({ search, category }) => {
 
   const isFocused = useIsFocused();
-
+   
   const [noteContentsFilters, setNoteContentsFilters] = useState([]);
   const noteList = async () => {
-    try {//await AsyncStorage.removeItem("notes"); return;
-      
+    
+    //await AsyncStorage.removeItem("notes"); return;
+    try {      
       const existingNotes = await AsyncStorage.getItem("notes");
       if (!existingNotes) {
         await AsyncStorage.setItem('notes', JSON.stringify(noteLists));

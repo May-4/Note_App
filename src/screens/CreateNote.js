@@ -6,12 +6,13 @@ import Header from '../components/Header';
 import CategoryList from '../components/CategoryList';
 import CreateButton from '../components/CreateButton';
 import UpdateButton from '../components/UpdateButton';
-
+import { v4 as uuidv4 } from 'uuid';
+import 'react-native-get-random-values';
 
 const CreateNote = ({ navigation }) => {
-
+  const uniqueId = uuidv4();
   const [note, setNote] = useState({
-    id: null,
+    id: uniqueId,
     title: '',
     content: '',
     category: '',
