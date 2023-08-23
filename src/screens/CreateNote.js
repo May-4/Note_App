@@ -1,34 +1,42 @@
 import { StyleSheet, ScrollView, SafeAreaView, Text, View, TextInput, FlatList, TouchableOpacity, } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import { useState, useEffect } from 'react';
 
-import { useState } from 'react';
 import Header from '../components/Header';
 import CategoryList from '../components/CategoryList';
 import CreateButton from '../components/CreateButton';
+import UpdateButton from '../components/UpdateButton';
 
 
 const CreateNote = ({ navigation }) => {
 
-  const [title, setTitle] = useState();
-  const [selectedCategory, setSelectedCategory] = useState();
-  const [detailText, setDetailText] = useState();
+  const [note, setNote] = useState({
+    id: null,
+    title: '',
+    content: '',
+    category: '',
+  });
+
 
   const selectedcategoryItem = (value) => {
-    setSelectedCategory(value);
+    setNote((prevNote) => ({
+      ...prevNote,
+      category: value,
+    }));
   }
-  const note = {
-    title: title,
-    content: detailText,
-    category: selectedCategory,      
-  };
+  // Get category from <CategroyList>
 
-  const resetNote = () => {
-    setTitle('');
-    setSelectedCategory('');
-    setDetailText('');
-  }
+  const route = useRoute();
+  const updateNote = route.params ?? null;
+  useEffect(() => {
+    if (updateNote) {
+      setNote(updateNote);
+    }
+  }, [])
+  //Get Parameter From FilterNote.js For Edit
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{marginHorizontal: 15}}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{ marginHorizontal: 15 }}>
 
       <Header />
 
@@ -36,8 +44,8 @@ const CreateNote = ({ navigation }) => {
         <Text style={styles.titleText}> Title </Text>
         <TextInput
           style={[styles.titleInput]}
-          value={title}
-          onChangeText={setTitle}
+          value={note.title}
+          onChangeText= {(text) => setNote((prevNote) => ({ ...prevNote, title: text }))}
           placeholder="Enter Title"
         />
       </View>
@@ -45,7 +53,11 @@ const CreateNote = ({ navigation }) => {
 
       <View>
         <Text style={styles.titleText}> Category </Text>
-        <CategoryList onUpdateCategory={selectedcategoryItem} type='radioList' />
+        <CategoryList
+          onUpdateCategory={selectedcategoryItem}
+          type='radioList'
+          changeCategory={updateNote ? updateNote.category : null}
+        />
       </View>
       {/*End Category Radio List*/}
 
@@ -54,13 +66,15 @@ const CreateNote = ({ navigation }) => {
         <TextInput
           style={styles.textInput}
           multiline
-          value={detailText}
-          onChangeText={setDetailText}
+          value={note.content}
+          onChangeText= {(text) => setNote((prevNote) => ({ ...prevNote, content: text }))}
         />
       </View>
       {/*End Add Detail Textarea*/}
 
-      <CreateButton newNote={note} navigation={navigation}/>
+      {!updateNote && <CreateButton newNote={note} navigation={navigation} />}
+      
+      { updateNote && <UpdateButton newNote={note} navigation={navigation} />}
       {/*End Create Button*/}
 
     </ScrollView>

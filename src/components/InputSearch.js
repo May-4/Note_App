@@ -8,7 +8,6 @@ const InputSearch = ({ onUpdateSearch }) => {
   const [search, setSearch] = useState();
 
   const handleSearchChange = (newSearch) => {
-    
     setSearch(newSearch);
     onUpdateSearch(newSearch); 
   };

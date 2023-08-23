@@ -1,18 +1,25 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const CreateButton = ({ newNote, navigation }) => {
-  
+const UpdateButton = ({ newNote, navigation }) => {
+
   const addNote = async () => {
 
     try {
       const existingNotes = await AsyncStorage.getItem("notes");
 
       const notesArr = existingNotes ? JSON.parse(existingNotes) : [];
-      newNote.id = notesArr.length + 1;
-      notesArr.unshift(newNote);
-     
-      await AsyncStorage.setItem('notes', JSON.stringify(notesArr));
+      const noteIndex = notesArr.findIndex((noteItem) => noteItem.id == newNote.id);
+    
+      if (noteIndex !== -1) {
+        // Update the content of the note with matching id
+        notesArr[noteIndex].title = newNote.title;
+        notesArr[noteIndex].category = newNote.category;
+        notesArr[noteIndex].content = newNote.content;
+      
+        // Save the updated notes array back to AsyncStorage
+        await AsyncStorage.setItem('notes', JSON.stringify(notesArr));
+      }
       navigation.navigate('Home');
 
     } catch (error) {
@@ -30,7 +37,7 @@ const CreateButton = ({ newNote, navigation }) => {
       style={styles.createBtn}
       onPress={addNote}
     >
-      <Text style={styles.createBtnText}> Create </Text>
+      <Text style={styles.createBtnText}> Update </Text>
     </TouchableOpacity>
   )
 }
@@ -52,4 +59,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   }
 });
-export default CreateButton;
+export default UpdateButton;

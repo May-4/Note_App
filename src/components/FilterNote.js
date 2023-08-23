@@ -1,23 +1,24 @@
 import { Text, View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { colors,noteLists } from '../util/constant';
-import { useIsFocused } from '@react-navigation/native';
+
+import { colors, noteLists } from '../util/constant';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 const FilterNote = ({ search, category }) => {
 
   const isFocused = useIsFocused();
+
   const [noteContentsFilters, setNoteContentsFilters] = useState([]);
   const noteList = async () => {
-    try {
+    try {//await AsyncStorage.removeItem("notes"); return;
       
       const existingNotes = await AsyncStorage.getItem("notes");
-
       if (!existingNotes) {
         await AsyncStorage.setItem('notes', JSON.stringify(noteLists));
       }
       const noteContents = existingNotes ? JSON.parse(existingNotes) : [];
-      
+
       const filters = noteContents.filter((note) => {
         const noteItem = note.content.toLowerCase() + note.title.toLowerCase();
         const searchbyContent = noteItem.includes(search.toLowerCase().trim());
@@ -25,8 +26,8 @@ const FilterNote = ({ search, category }) => {
           return searchbyContent;
         }
         return searchbyContent && note.category === category;
+        
       });
-
       setNoteContentsFilters(filters);
 
     } catch (error) {
@@ -39,28 +40,39 @@ const FilterNote = ({ search, category }) => {
       noteList();
     }
   }, [search, category, isFocused]);
+  //Show Filter NoteList By Search and Category
 
+  const navigation = useNavigation();
+  const navigateToCreatePage = (updateItem) => {
+    navigation.navigate('CreateNote',updateItem);
+  };
+  // Navigation To Crate Note for editing 
 
   const renderNoteItem = ({ item, index }) => {
 
     index = (index + 1) % colors.length;
-    const randomColor = colors[index];
+    randomColor = colors[index];
 
     return (
 
       <View style={[styles.noteItem, { backgroundColor: randomColor }]}>
-        < TouchableOpacity activeOpacity={0.5}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={()=>navigateToCreatePage(item)}
+        >
+
           <Text style={styles.noteItemTitle}>{item.title}</Text>
           <Text style={styles.noteItemText}>
             {item.content.slice(0, 30)}
             {item.content.length > 30 ? "..." : ""}
           </Text>
+
         </TouchableOpacity>
       </View>
 
     )
   };
-  //End Note Listing
+  //Show Item from Note Listing 
 
 
   return (
@@ -70,7 +82,7 @@ const FilterNote = ({ search, category }) => {
       renderItem={renderNoteItem}
       contentContainerStyle={styles.noteList}
       showsVerticalScrollIndicator={false}
-      style={{ height: '70%'}}
+      style={{ height: '70%' }}
     />
   )
 }
