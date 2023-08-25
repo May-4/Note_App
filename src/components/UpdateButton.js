@@ -1,35 +1,30 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useContext, useEffect } from "react";
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import NoteContext from '../hooks/context/noteContext';
 
-const UpdateButton = ({ newNote, navigation }) => {
-
+const UpdateButton = ({ newNote=null, navigation }) => {
+  
+  const [notes, setNotes] = useContext(NoteContext);
   const addNote = async () => {
 
-    try {
-      const existingNotes = await AsyncStorage.getItem("notes");
-
-      const notesArr = existingNotes ? JSON.parse(existingNotes) : [];
-      const noteIndex = notesArr.findIndex((noteItem) => noteItem.id == newNote.id);
-    
-      if (noteIndex !== -1) {
-        // Update the content of the note with matching id
-        notesArr[noteIndex].title = newNote.title;
-        notesArr[noteIndex].category = newNote.category;
-        notesArr[noteIndex].content = newNote.content;
-      
-        // Save the updated notes array back to AsyncStorage
-        await AsyncStorage.setItem('notes', JSON.stringify(notesArr));
+    const updatedNotes = notes.map((n) => {
+      if (n.id == newNote.id) {
+        return ( {...n, ...newNote} )
       }
-      navigation.navigate('Home');
+      return n;
+    })
 
+    try {
+      await AsyncStorage.setItem("notes", JSON.stringify(updatedNotes));
+      navigation.navigate('Home');
+      
     } catch (error) {
-      console.error('Error adding note:', error);
+      alert(error);
     }
 
-    //await AsyncStorage.removeItem('notes'); 
-    //return;
-
   }
+ 
 
   return (
     <TouchableOpacity

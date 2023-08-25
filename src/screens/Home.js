@@ -1,5 +1,5 @@
 import { StyleSheet, SafeAreaView, Text, View, TextInput, FlatList, TouchableOpacity, } from 'react-native';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 //********Component******** */
 import Header from '../components/Header';
@@ -7,8 +7,6 @@ import InputSearch from '../components/InputSearch';
 import CategoryList from '../components/CategoryList';
 import AddButton from '../components/AddButton';
 import FilterNote from '../components/FilterNote';
-
-
 
 const Home = ({ navigation }) => {
 

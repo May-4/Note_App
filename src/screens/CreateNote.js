@@ -1,13 +1,14 @@
 import { StyleSheet, ScrollView, SafeAreaView, Text, View, TextInput, FlatList, TouchableOpacity, } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import 'react-native-get-random-values';
 
 import Header from '../components/Header';
 import CategoryList from '../components/CategoryList';
 import CreateButton from '../components/CreateButton';
 import UpdateButton from '../components/UpdateButton';
-import { v4 as uuidv4 } from 'uuid';
-import 'react-native-get-random-values';
+
 
 const CreateNote = ({ navigation }) => {
   const uniqueId = uuidv4();

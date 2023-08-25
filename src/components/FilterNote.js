@@ -1,25 +1,25 @@
 import { Text, View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { colors, noteLists } from '../util/constant';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
+import NoteContext from '../hooks/context/noteContext';
 
 const FilterNote = ({ search, category }) => {
 
   const isFocused = useIsFocused();
-   
-  const [noteContentsFilters, setNoteContentsFilters] = useState([]);
+  const [notes, setNotes] = useContext(NoteContext);
+ 
   const noteList = async () => {
-    
+
     //await AsyncStorage.removeItem("notes"); return;
-    try {      
+    try {
       const existingNotes = await AsyncStorage.getItem("notes");
       if (!existingNotes) {
         await AsyncStorage.setItem('notes', JSON.stringify(noteLists));
       }
       const noteContents = existingNotes ? JSON.parse(existingNotes) : [];
-
       const filters = noteContents.filter((note) => {
         const noteItem = note.content.toLowerCase() + note.title.toLowerCase();
         const searchbyContent = noteItem.includes(search.toLowerCase().trim());
@@ -27,14 +27,15 @@ const FilterNote = ({ search, category }) => {
           return searchbyContent;
         }
         return searchbyContent && note.category === category;
-        
+
       });
-      setNoteContentsFilters(filters);
+      setNotes(filters);
 
     } catch (error) {
       console.error("An error occurred:", error);
       return;
     }
+
   };
   useEffect(() => {
     if (isFocused) {
@@ -45,9 +46,9 @@ const FilterNote = ({ search, category }) => {
 
   const navigation = useNavigation();
   const navigateToCreatePage = (updateItem) => {
-    navigation.navigate('CreateNote',updateItem);
+    navigation.navigate('CreateNote', updateItem);
   };
-  // Navigation To Crate Note for editing 
+  // Navigation To Crate Note wit updateItem for editing 
 
   const renderNoteItem = ({ item, index }) => {
 
@@ -59,7 +60,7 @@ const FilterNote = ({ search, category }) => {
       <View style={[styles.noteItem, { backgroundColor: randomColor }]}>
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={()=>navigateToCreatePage(item)}
+          onPress={() => navigateToCreatePage(item)}
         >
 
           <Text style={styles.noteItemTitle}>{item.title}</Text>
@@ -79,7 +80,7 @@ const FilterNote = ({ search, category }) => {
   return (
     <FlatList
       numColumns={2}
-      data={noteContentsFilters}
+      data={notes}
       renderItem={renderNoteItem}
       contentContainerStyle={styles.noteList}
       showsVerticalScrollIndicator={false}
