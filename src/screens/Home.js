@@ -1,34 +1,27 @@
 import { StyleSheet, SafeAreaView, Text, View, TextInput, Alert, FlatList, TouchableOpacity, } from 'react-native';
 import React, { useEffect, useState, useContext } from 'react';
-import { Feather } from "react-native-vector-icons";
-import { v4 as uuidv4 } from 'uuid';
 import 'react-native-get-random-values';
+import { Feather } from "react-native-vector-icons";
 
 //********Component******** */
 import Header from '../components/Header';
 import InputSearch from '../components/InputSearch';
 import CategoryList from '../components/CategoryList';
 import FilterNote from '../components/FilterNote';
-import CategoryContext from '../hooks/context/categoryContext';
-import { useIsFocused, useRoute } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import AddCategory from '../components/AddCategory';
+import CategoryContext from '../hooks/context/categoryContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CategoryIdContext from '../hooks/context/categoryIdContext';
+
 
 const Home = ({ navigation }) => {
 
-  const [search, setSearch] = useState('');
-  const [categoryName, setCategoryName] = useState(null);
-  const [categorys, setCategorys] = useContext(CategoryContext);
-
-  
+  const [search, setSearch] = useState(''); 
 
   const searchValue = (value) => {
     setSearch(value);
   }
-  const selectedcategoryItem = (value) => {
-    setCategoryName(value);
-  }
-  //Update Set Value
+
   const [refreshCategoryList, setRefreshCategoryList] = useState(false);
   const refrehCategory = (value) => {
     setRefreshCategoryList(value);
@@ -45,16 +38,15 @@ const Home = ({ navigation }) => {
         {/*End Search Bar */}
 
         <View style={styles.cate_wrapper}>
-          <CategoryList onUpdateCategory={selectedcategoryItem} refresh={refreshCategoryList}/>
-          <AddCategory onRefresh={refrehCategory} />  
+          <CategoryList refresh={refreshCategoryList} />
+          <AddCategory onRefresh={refrehCategory} />
         </View>
-
         {/*End Category  */}
       </View>
       {/*End Search and Category Section*/}
 
       <View>
-        <FilterNote search={search} cate_name={categoryName} />
+        <FilterNote search={search} />
         {/*End Display Notes Section  cate_id={categoryId} **/}
 
         <TouchableOpacity activeOpacity={0.8} style={styles.circle}
@@ -77,9 +69,9 @@ const styles = StyleSheet.create({
     marginBottom: 38,
   },
   cate_wrapper: {
-    flexDirection: 'row', 
-    justifyContent: 'flex-start', 
-    alignItems: 'center', 
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     height: 40,
   },
   circle: {

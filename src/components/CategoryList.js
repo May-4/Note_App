@@ -3,21 +3,20 @@ import { useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { noteCategories, categoryType } from '../util/constant';
-import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
 
-import SelectedItem from './SelectedItem';
-import SelectedRadioCategory from './SelectedRadio';
+import CategoryItem from './CategoryItem';
+import RadioCategoryItem from './RadioCategoryItem';
 import { useIsFocused, useRoute } from '@react-navigation/native';
 import CategoryContext from '../hooks/context/categoryContext';
+import CategoryIdContext from '../hooks/context/categoryIdContext';
 
 
-const CategoryList = ({ onUpdateCategory, refresh=false, changeCategory = null, type = null, }) => {
+const CategoryList = ({ refresh = false, updateCategId=null, type = null, }) => {
 
   const isFocused = useIsFocused();
 
   const [categorys, setCategorys] = useContext(CategoryContext);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [categoryById, setCategoryById] = useContext(CategoryIdContext);
 
   const [categLists, setCategLists] = useState([]);
 
@@ -35,50 +34,45 @@ const CategoryList = ({ onUpdateCategory, refresh=false, changeCategory = null, 
     }
 
   }
-
   useEffect(() => {
     if (isFocused) {
       getCategorys();
     }
-  }, [isFocused,refresh])
+  }, [isFocused, refresh])
   // GEt Categorys from Async Storage
 
   useEffect(() => {
     if (categorys.length) {
-      const lists = type ? categorys : [{ id: uuidv4(), name: 'all' }, ...categorys];
+      const lists = type ? categorys : [{ id: '-1', name: 'all' }, ...categorys];
 
-      setSelectedCategory(changeCategory ?? lists[0].name)
-      onUpdateCategory(changeCategory ?? lists[0].name)
-
+      setCategoryById( updateCategId ?? (categoryById.length==0 ? lists[0].id : categoryById) );
       setCategLists(lists);
     }
-  }, [categorys, type])
-  // change category list depending on type 
-
-  const handleSelect = (name) => {
-    setSelectedCategory(name);
-    onUpdateCategory(name);
+  }, [categorys, type, updateCategId ])
+  // change category list depending on type  and Filter flatlist
+  
+  const handleSelect = (id) => {
+    setCategoryById(id)
   };
   const renderCategoryItem = ({ item }) => {
-    const isSelected = (item.name === selectedCategory);
-    if (type == categoryType) {
+
+    if (type) {
       return (
-        <SelectedRadioCategory
-          label={item.name}
-          selected={isSelected}
-          onSelect={() => handleSelect(item.name)}
+        <RadioCategoryItem
+          item={item}
+          selectedId={categoryById}
+          onSelect={() => handleSelect(item.id)}
         />
       )
     }
     return (
-      <SelectedItem
-        label={item.name}
-        selected={isSelected}
-        onSelect={() => handleSelect(item.name)}
+      <CategoryItem
+        item={item}
+        selectedId={categoryById}
+        onSelect={() => handleSelect(item.id)}
       />
     )
   }
-
 
   return (
     <View style={{ width: '85%' }}>

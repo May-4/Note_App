@@ -6,7 +6,7 @@ import NoteContext from "../hooks/context/noteContext";
 const CreateButton = ({ newNote, navigation }) => {
 
   const [notes, setNotes] = useContext(NoteContext);
-
+  
   const addNote = async () => {
     try {
       const noteList = [newNote, ...notes];

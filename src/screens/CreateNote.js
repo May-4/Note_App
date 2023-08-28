@@ -1,6 +1,6 @@
 import { StyleSheet, ScrollView, SafeAreaView, Text, View, TextInput, FlatList, TouchableOpacity, } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 import 'react-native-get-random-values';
@@ -9,17 +9,23 @@ import Header from '../components/Header';
 import CategoryList from '../components/CategoryList';
 import CreateButton from '../components/CreateButton';
 import UpdateButton from '../components/UpdateButton';
+import CategoryIdContext from '../hooks/context/categoryIdContext';
+import CategoryContext from '../hooks/context/categoryContext';
 
 
 const CreateNote = ({ navigation }) => {
 
   const uniqueId = uuidv4();
+  const [categoryById, setCategoryById] = useContext(CategoryIdContext);
+  const [categorys, setCategorys] = useContext(CategoryContext);
+
   const [note, setNote] = useState({
     id: uniqueId,
     title: '',
     content: '',
-    category: '',
+    category_id: '',
   });
+  
 
   const route = useRoute();
   const updateNote = route.params ?? null;
@@ -29,15 +35,16 @@ const CreateNote = ({ navigation }) => {
     }
   }, []);
   //Get Parameter From FilterNote.js For update
-
-  const selectedcategoryItem = (value) => {
-    setNote((prevNote) => ({
-      ...prevNote,
-      category: value,
-    }));
-  }
+  
+  useEffect(() => {
+    if (categoryById) {
+      setNote((prevNote) => ({
+        ...prevNote,
+        category_id: categoryById,
+      }));
+    }
+  }, [categoryById]) 
   // Get category from <CategroyList>
-
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{ marginHorizontal: 15 }}>
@@ -48,7 +55,7 @@ const CreateNote = ({ navigation }) => {
         <Text style={styles.titleText}> Title </Text>
         <TextInput
           style={[styles.titleInput]}
-          value={note.title}
+          value={note.title}          
           onChangeText={(text) => setNote((prevNote) => ({ ...prevNote, title: text }))}
           placeholder="Enter Title"
         />
@@ -58,9 +65,8 @@ const CreateNote = ({ navigation }) => {
       <View>
         <Text style={styles.titleText}> Category </Text>
         <CategoryList
-          onUpdateCategory={selectedcategoryItem}
           type='radioList'
-          changeCategory={updateNote ? updateNote.category : null}
+          updateCategId= { updateNote ? updateNote.category_id : null}
         />
       </View>
       {/*End Category Radio List*/}

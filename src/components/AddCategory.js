@@ -26,6 +26,9 @@ const AddCategory = ({ onRefresh }) => {
   const handleDialogSubmit = (inputText) => {
     setDialogText(inputText);
   };
+  const handleDialogCancel = () => {
+    setDialogVisible(false);
+  };
 
   useEffect(() => {
     if (isFocused && dialogText.trim() !== '') {
@@ -43,9 +46,6 @@ const AddCategory = ({ onRefresh }) => {
 
   }, [dialogText, isFocused]);
 
-  const handleDialogCancel = () => {
-    setDialogVisible(false);
-  };
 
   return (
     <View>

@@ -5,11 +5,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors, noteLists } from '../util/constant';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import NoteContext from '../hooks/context/noteContext';
+import CategoryIdContext from '../hooks/context/categoryIdContext';
+import CategoryContext from '../hooks/context/categoryContext';
 
-const FilterNote = ({ search, cate_name }) => {
+const FilterNote = ({ search }) => {
 
   const isFocused = useIsFocused();
   const [notes, setNotes] = useContext(NoteContext);
+  const [categoryById, setCategoryById] = useContext(CategoryIdContext);
+  const [categorys, setCategorys] = useContext(CategoryContext);
+
   const [filterNotes, setFilterNotes] = useState([]);
 
   const noteList = async () => {
@@ -25,7 +30,6 @@ const FilterNote = ({ search, cate_name }) => {
     }
 
   };
-
   useEffect(() => {
     if (isFocused) {
       noteList();
@@ -36,25 +40,30 @@ const FilterNote = ({ search, cate_name }) => {
   useEffect(() => {
     if (notes.length) {
       const lowerSearch = search.toLowerCase().trim();
-      const lowerCateName = cate_name ? cate_name.toLowerCase() : '';
+      const cate_ids = categorys.map(categ => categ.id);
+      const matchesCategory = cate_ids.includes(categoryById);
 
       const filteredNotes = notes.filter(note => {
         const noteItem = note.content.toLowerCase() + note.title.toLowerCase();
         const searchByContent = noteItem.includes(lowerSearch);
-        if (!lowerCateName || lowerCateName === 'all') {
+        
+        if (matchesCategory) {
+          return searchByContent && note['category_id'] === categoryById;
+        } else {
           return searchByContent;
         }
-        return searchByContent && note.category.toLowerCase() === lowerCateName;
       });
-
       setFilterNotes(filteredNotes);
+      //console.log('filterNotes');
+      //console.log(filteredNotes); // render 4 time when you click 3rd item
+      
     }
-  }, [notes, search, cate_name]);
+  }, [search, categoryById, notes]);
   //Show Filter NoteList By Search and Category
 
   const navigation = useNavigation();
   const navigateToCreatePage = (updateItem) => {
-    navigation.navigate('CreateNote', updateItem);
+    navigation.navigate('DetailNote', updateItem);
   };
   // Navigation To Crate Note wit updateItem for editing 
 

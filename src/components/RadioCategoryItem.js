@@ -1,8 +1,9 @@
-import React from 'react';
+
 import { StyleSheet, Text, TouchableOpacity, } from 'react-native';
 
-const SelectedRadioCategory = ({ label, selected, onSelect }) => {
 
+const RadioCategoryItem = ({ item, selectedId, onSelect }) => {
+  const isSelected = (item.id === selectedId);
   return (
     <TouchableOpacity
       style={styles.radioWrapper}
@@ -11,19 +12,19 @@ const SelectedRadioCategory = ({ label, selected, onSelect }) => {
     >
       <Text style={[
         styles.radioButton,
-        selected && styles.radioButtonSelected
+        isSelected && styles.radioButtonSelected
       ]}>
       </Text>
-      <Text> {label} </Text>
+      <Text> {item.name} </Text>
     </TouchableOpacity>
   )
-  
 };
 const styles = StyleSheet.create({
   
   radioWrapper: {
     flexDirection: 'row',
     marginRight: 24,
+    marginBottom: 40,
   },
   radioButton: {
     marginRight: 3,
@@ -48,4 +49,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default SelectedRadioCategory;
+export default RadioCategoryItem;

@@ -10,8 +10,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import NoteProvider from './src/hooks/provider/noteProvider';
 import CategoryProvider from './src/hooks/provider/categoryProvider';
-
+import CategoryIdProvider from './src/hooks/provider/idProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DetailNote from './src/screens/DetailNote';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -24,12 +25,15 @@ export default function App() {
   return (
     <NoteProvider >
       <CategoryProvider>
-        <NavigationContainer >
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="CreateNote" component={CreateNote} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <CategoryIdProvider>
+          <NavigationContainer >
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="CreateNote" component={CreateNote} />
+              <Stack.Screen name='DetailNote' component={DetailNote} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </CategoryIdProvider>
       </CategoryProvider>
     </NoteProvider>
   );
