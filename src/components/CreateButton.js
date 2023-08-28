@@ -1,14 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext } from "react";
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
-import NoteContext from '../hooks/context/noteContext';
+import NoteContext from "../hooks/context/noteContext";
 
 const CreateButton = ({ newNote, navigation }) => {
 
   const [notes, setNotes] = useContext(NoteContext);
 
   const addNote = async () => {
-
     try {
       const noteList = [newNote, ...notes];
       await AsyncStorage.setItem('notes', JSON.stringify(noteList));
@@ -17,10 +16,6 @@ const CreateButton = ({ newNote, navigation }) => {
     } catch (error) {
       console.error('Error adding note:', error);
     }
-
-    //await AsyncStorage.removeItem('notes'); 
-    //return;
-
   }
 
   return (

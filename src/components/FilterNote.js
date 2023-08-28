@@ -6,30 +6,18 @@ import { colors, noteLists } from '../util/constant';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import NoteContext from '../hooks/context/noteContext';
 
-const FilterNote = ({ search, category }) => {
+const FilterNote = ({ search, cate_name }) => {
 
   const isFocused = useIsFocused();
   const [notes, setNotes] = useContext(NoteContext);
- 
-  const noteList = async () => {
+  const [filterNotes, setFilterNotes] = useState([]);
 
+  const noteList = async () => {
     //await AsyncStorage.removeItem("notes"); return;
     try {
       const existingNotes = await AsyncStorage.getItem("notes");
-      if (!existingNotes) {
-        await AsyncStorage.setItem('notes', JSON.stringify(noteLists));
-      }
-      const noteContents = existingNotes ? JSON.parse(existingNotes) : [];
-      const filters = noteContents.filter((note) => {
-        const noteItem = note.content.toLowerCase() + note.title.toLowerCase();
-        const searchbyContent = noteItem.includes(search.toLowerCase().trim());
-        if (!category || category === "all") {
-          return searchbyContent;
-        }
-        return searchbyContent && note.category === category;
-
-      });
-      setNotes(filters);
+      const noteContents = existingNotes ? JSON.parse(existingNotes) : noteLists;
+      setNotes(noteContents);
 
     } catch (error) {
       console.error("An error occurred:", error);
@@ -37,11 +25,31 @@ const FilterNote = ({ search, category }) => {
     }
 
   };
+
   useEffect(() => {
     if (isFocused) {
       noteList();
     }
-  }, [search, category, isFocused]);
+  }, [isFocused]);
+  //Show All NoteList
+
+  useEffect(() => {
+    if (notes.length) {
+      const lowerSearch = search.toLowerCase().trim();
+      const lowerCateName = cate_name ? cate_name.toLowerCase() : '';
+
+      const filteredNotes = notes.filter(note => {
+        const noteItem = note.content.toLowerCase() + note.title.toLowerCase();
+        const searchByContent = noteItem.includes(lowerSearch);
+        if (!lowerCateName || lowerCateName === 'all') {
+          return searchByContent;
+        }
+        return searchByContent && note.category.toLowerCase() === lowerCateName;
+      });
+
+      setFilterNotes(filteredNotes);
+    }
+  }, [notes, search, cate_name]);
   //Show Filter NoteList By Search and Category
 
   const navigation = useNavigation();
@@ -54,14 +62,11 @@ const FilterNote = ({ search, category }) => {
 
     index = (index + 1) % colors.length;
     randomColor = colors[index];
-
     return (
-
       <View style={[styles.noteItem, { backgroundColor: randomColor }]}>
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={() => navigateToCreatePage(item)}
-        >
+          onPress={() => navigateToCreatePage(item)} >
 
           <Text style={styles.noteItemTitle}>{item.title}</Text>
           <Text style={styles.noteItemText}>
@@ -71,7 +76,6 @@ const FilterNote = ({ search, category }) => {
 
         </TouchableOpacity>
       </View>
-
     )
   };
   //Show Item from Note Listing 
@@ -80,11 +84,11 @@ const FilterNote = ({ search, category }) => {
   return (
     <FlatList
       numColumns={2}
-      data={notes}
+      data={filterNotes}
       renderItem={renderNoteItem}
       contentContainerStyle={styles.noteList}
       showsVerticalScrollIndicator={false}
-      style={{ height: '70%' }}
+      style={{ height: '65%' }}
     />
   )
 }

@@ -1,11 +1,12 @@
 import { StyleSheet, TouchableOpacity, } from 'react-native';
 import { Feather } from "react-native-vector-icons";
+import { useNavigation } from '@react-navigation/native';
 
-const AddButton = ({link}) => {
+const AddButton = () => {
+  const navigation = useNavigation();
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.circle}
-      onPress={() => link.navigate('CreateNote')
-    }>
+      onPress={navigation.navigate('CreateNote')} >
       <Feather name="plus" size={30} color="white" />
     </TouchableOpacity>
   )

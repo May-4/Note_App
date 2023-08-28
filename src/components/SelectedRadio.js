@@ -9,7 +9,10 @@ const SelectedRadioCategory = ({ label, selected, onSelect }) => {
       activeOpacity={0.5}
       onPress={onSelect}
     >
-      <Text style={[styles.radioButton, selected && styles.radioButtonSelected]}>
+      <Text style={[
+        styles.radioButton,
+        selected && styles.radioButtonSelected
+      ]}>
       </Text>
       <Text> {label} </Text>
     </TouchableOpacity>

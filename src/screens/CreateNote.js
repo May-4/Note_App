@@ -1,6 +1,7 @@
 import { StyleSheet, ScrollView, SafeAreaView, Text, View, TextInput, FlatList, TouchableOpacity, } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
+
 import { v4 as uuidv4 } from 'uuid';
 import 'react-native-get-random-values';
 
@@ -11,6 +12,7 @@ import UpdateButton from '../components/UpdateButton';
 
 
 const CreateNote = ({ navigation }) => {
+
   const uniqueId = uuidv4();
   const [note, setNote] = useState({
     id: uniqueId,
@@ -19,6 +21,14 @@ const CreateNote = ({ navigation }) => {
     category: '',
   });
 
+  const route = useRoute();
+  const updateNote = route.params ?? null;
+  useEffect(() => {
+    if (updateNote) {
+      setNote(updateNote);
+    }
+  }, []);
+  //Get Parameter From FilterNote.js For update
 
   const selectedcategoryItem = (value) => {
     setNote((prevNote) => ({
@@ -28,14 +38,6 @@ const CreateNote = ({ navigation }) => {
   }
   // Get category from <CategroyList>
 
-  const route = useRoute();
-  const updateNote = route.params ?? null;
-  useEffect(() => {
-    if (updateNote) {
-      setNote(updateNote);
-    }
-  }, [])
-  //Get Parameter From FilterNote.js For Edit
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{ marginHorizontal: 15 }}>
@@ -47,7 +49,7 @@ const CreateNote = ({ navigation }) => {
         <TextInput
           style={[styles.titleInput]}
           value={note.title}
-          onChangeText= {(text) => setNote((prevNote) => ({ ...prevNote, title: text }))}
+          onChangeText={(text) => setNote((prevNote) => ({ ...prevNote, title: text }))}
           placeholder="Enter Title"
         />
       </View>
@@ -69,14 +71,14 @@ const CreateNote = ({ navigation }) => {
           style={styles.textInput}
           multiline
           value={note.content}
-          onChangeText= {(text) => setNote((prevNote) => ({ ...prevNote, content: text }))}
+          onChangeText={(text) => setNote((prevNote) => ({ ...prevNote, content: text }))}
         />
       </View>
       {/*End Add Detail Textarea*/}
 
       {!updateNote && <CreateButton newNote={note} navigation={navigation} />}
-      
-      { updateNote && <UpdateButton newNote={note} navigation={navigation} />}
+
+      {updateNote && <UpdateButton newNote={note} navigation={navigation} />}
       {/*End Create Button*/}
 
     </ScrollView>

@@ -6,6 +6,7 @@ import NoteContext from '../hooks/context/noteContext';
 const UpdateButton = ({ newNote=null, navigation }) => {
   
   const [notes, setNotes] = useContext(NoteContext);
+
   const addNote = async () => {
 
     const updatedNotes = notes.map((n) => {
@@ -14,7 +15,6 @@ const UpdateButton = ({ newNote=null, navigation }) => {
       }
       return n;
     })
-
     try {
       await AsyncStorage.setItem("notes", JSON.stringify(updatedNotes));
       navigation.navigate('Home');
@@ -25,7 +25,6 @@ const UpdateButton = ({ newNote=null, navigation }) => {
 
   }
  
-
   return (
     <TouchableOpacity
       activeOpacity={0.8}
