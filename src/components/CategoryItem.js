@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import DialogInput from 'react-native-dialog-input';
 
 import { useContext, useState } from 'react';
@@ -11,13 +11,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CategoryItem = ({ item, selectedId, onSelect }) => {
 
-  const [categorys, setCategorys] = useContext(CategoryContext);
+  const { categ_lists, categ_id } = useContext(CategoryContext);
+  const [categorys, setCategorys] = categ_lists;
+  const [categoryById, setCategoryById] = categ_id;
+
+
   const [notes, setNotes] = useContext(NoteContext);
 
   const isSelected = (item.id === selectedId);
-  const [isEditVisible, setEditVisible] = useState(false);
-
-  const [categId, SetcategId] = useState('');
+  const [iconVisible, setIconVisible] = useState(false);
   const [isDialogVisible, setDialogVisible] = useState(false);
   const [editCategory, setEditCategory] = useState({
     id: null,
@@ -27,14 +29,14 @@ const CategoryItem = ({ item, selectedId, onSelect }) => {
 
   const handleLongPress = (id) => {
     if (id != -1) {
-      setEditVisible(true);
-      SetcategId(id);
+      setCategoryById(id);
+      setIconVisible(true);
       return;
     }
-    setEditVisible(false);
+    setIconVisible(false);
   };
   const handleEditCategory = (id) => {
-    const item = categorys.find((category) => category.id == categId)
+    const item = categorys.find((category) => category.id == id)
     setEditCategory(item);
     setDialogVisible(true);
   }
@@ -42,31 +44,26 @@ const CategoryItem = ({ item, selectedId, onSelect }) => {
 
 
   const editCategoryItem = async (inputText) => {
-
     if (inputText.trim() !== '' && editCategory) {
-      if (inputText === editCategory.name) {
-        setDialogVisible(false);
-      } else {
-        const updatedCategories = categorys.map(category => {
-          if (category.id === editCategory.id) {
-            return { ...category, name: inputText };
-          }
-          return category;
-        });
-        setCategorys(updatedCategories);
+      const updatedCategories = [
+        ...categorys.filter(category => category.id !== editCategory.id),
+        { ...editCategory, name: inputText }
+      ];
 
-        await AsyncStorage.setItem('categorys', JSON.stringify(updatedCategories));
-        setDialogVisible(false)
-      }
-      setEditVisible(false);
+      setCategorys(updatedCategories);
+      await AsyncStorage.setItem('categorys', JSON.stringify(updatedCategories));
+
+      setDialogVisible(false)
+      setIconVisible(false);
+
     } else {
       setDialogVisible(false);
-      setEditVisible(false);
+      setIconVisible(false);
     }
   }
   const handleDialogCancel = () => {
     setDialogVisible(false);
-    setEditVisible(false);
+    setIconVisible(false);
   };
   // End Edit Category Item
 
@@ -80,6 +77,7 @@ const CategoryItem = ({ item, selectedId, onSelect }) => {
           text: "Yes",
           onPress: () => {
             deleteCategoryItem(id);
+            setCategoryById('-1')
           },
         },
 
@@ -118,26 +116,29 @@ const CategoryItem = ({ item, selectedId, onSelect }) => {
   return (
     <View>
       <TouchableOpacity
-        onPress={onSelect}
+        onPress={() => {
+          setIconVisible(false);
+          onSelect();
+        }}
         onLongPress={() => handleLongPress(item.id)}
         activeOpacity={0.5}
         style={[
           styles.categoryItem,
           isSelected && styles.selectedCategory,
-          isEditVisible && styles.d_flex
+          (categoryById == item.id) && iconVisible && styles.d_flex
         ]}
       >
-        <Text style={isSelected  && styles.selectedLabel}>{item.name}</Text>
+        <Text style={isSelected && styles.selectedLabel}>{item.name}</Text>
 
         {
-          isEditVisible && (
+          (categoryById == item.id) && iconVisible && (
             <View style={styles.d_flex}>
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={[styles.editIcon]}
                 onPress={() => handleEditCategory(item.id)}
               >
-                <Feather name="edit-3" size={10} color="white" />
+                <Feather name="edit-3" size={15} color="black" />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -145,7 +146,7 @@ const CategoryItem = ({ item, selectedId, onSelect }) => {
                 style={[styles.editIcon]}
                 onPress={() => showDialogConfirm(item.id)}
               >
-                <Feather name="trash" size={10} color="white" />
+                <Feather name="trash" size={15} color="black" />
               </TouchableOpacity>
             </View>
           )
@@ -189,12 +190,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   editIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 25,
+    height: 25,
+    borderRadius: 13,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1F2937',
+    backgroundColor: 'white',
     marginLeft: 10,
   },
 

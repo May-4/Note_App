@@ -5,15 +5,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors, noteLists } from '../util/constant';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import NoteContext from '../hooks/context/noteContext';
-import CategoryIdContext from '../hooks/context/categoryIdContext';
 import CategoryContext from '../hooks/context/categoryContext';
 
 const FilterNote = ({ search }) => {
 
   const isFocused = useIsFocused();
   const [notes, setNotes] = useContext(NoteContext);
-  const [categoryById, setCategoryById] = useContext(CategoryIdContext);
-  const [categorys, setCategorys] = useContext(CategoryContext);
+
+  const { categ_lists, categ_id } = useContext(CategoryContext);
+  const [categorys, setCategorys] = categ_lists;
+  const [categoryById, setCategoryById] = categ_id;
 
   const [filterNotes, setFilterNotes] = useState([]);
 
@@ -55,7 +56,7 @@ const FilterNote = ({ search }) => {
       });
       setFilterNotes(filteredNotes);
       //console.log('filterNotes');
-      //console.log(filteredNotes); // render 4 time when you click 3rd item
+      //console.log(filteredNotes); // render 4 time when you click 3rd item of category
       
     }
   }, [search, categoryById, notes]);

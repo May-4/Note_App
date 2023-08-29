@@ -9,9 +9,6 @@ import InputSearch from '../components/InputSearch';
 import CategoryList from '../components/CategoryList';
 import FilterNote from '../components/FilterNote';
 import AddCategory from '../components/AddCategory';
-import CategoryContext from '../hooks/context/categoryContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CategoryIdContext from '../hooks/context/categoryIdContext';
 
 
 const Home = ({ navigation }) => {

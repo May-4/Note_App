@@ -14,7 +14,9 @@ import CategoryContext from '../hooks/context/categoryContext';
 
 const AddCategory = ({ onRefresh }) => {
 
-  const [categorys, setCategorys] = useContext(CategoryContext);
+  const { categ_lists} = useContext(CategoryContext);
+  const [categorys, setCategorys] = categ_lists;
+
   const isFocused = useIsFocused();
   const [dialogText, setDialogText] = useState('');
   const [isDialogVisible, setDialogVisible] = useState(false);

@@ -8,15 +8,15 @@ import CategoryItem from './CategoryItem';
 import RadioCategoryItem from './RadioCategoryItem';
 import { useIsFocused, useRoute } from '@react-navigation/native';
 import CategoryContext from '../hooks/context/categoryContext';
-import CategoryIdContext from '../hooks/context/categoryIdContext';
 
 
 const CategoryList = ({ refresh = false, updateCategId=null, type = null, }) => {
 
   const isFocused = useIsFocused();
 
-  const [categorys, setCategorys] = useContext(CategoryContext);
-  const [categoryById, setCategoryById] = useContext(CategoryIdContext);
+  const { categ_lists, categ_id } = useContext(CategoryContext);
+  const [categorys, setCategorys] = categ_lists;
+  const [categoryById, setCategoryById] = categ_id;
 
   const [categLists, setCategLists] = useState([]);
 
@@ -73,14 +73,14 @@ const CategoryList = ({ refresh = false, updateCategId=null, type = null, }) => 
       />
     )
   }
-
+  
   return (
     <View style={{ width: '85%' }}>
       <FlatList
+        horizontal
         data={categLists}
         renderItem={renderCategoryItem}
         keyExtractor={(item) => item.id}
-        horizontal
         showsHorizontalScrollIndicator={false}
       />
     </View>

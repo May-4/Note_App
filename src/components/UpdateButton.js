@@ -6,7 +6,7 @@ import NoteContext from '../hooks/context/noteContext';
 const UpdateButton = ({ newNote=null, navigation }) => {
   
   const [notes, setNotes] = useContext(NoteContext);
-  console.log(newNote);
+  //console.log(newNote);
   const addNote = async () => {
     
     const updatedNotes = notes.map((n) => {

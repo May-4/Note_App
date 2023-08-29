@@ -9,15 +9,15 @@ import Header from '../components/Header';
 import CategoryList from '../components/CategoryList';
 import CreateButton from '../components/CreateButton';
 import UpdateButton from '../components/UpdateButton';
-import CategoryIdContext from '../hooks/context/categoryIdContext';
 import CategoryContext from '../hooks/context/categoryContext';
 
 
 const CreateNote = ({ navigation }) => {
 
   const uniqueId = uuidv4();
-  const [categoryById, setCategoryById] = useContext(CategoryIdContext);
-  const [categorys, setCategorys] = useContext(CategoryContext);
+  const { categ_id } = useContext(CategoryContext);
+  const [categoryById, setCategoryById] = categ_id;
+
 
   const [note, setNote] = useState({
     id: uniqueId,

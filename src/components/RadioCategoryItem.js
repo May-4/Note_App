@@ -1,9 +1,14 @@
 
+import { useContext } from 'react';
 import { StyleSheet, Text, TouchableOpacity, } from 'react-native';
+import CategoryContext from '../hooks/context/categoryContext';
 
 
 const RadioCategoryItem = ({ item, selectedId, onSelect }) => {
+
+
   const isSelected = (item.id === selectedId);
+  
   return (
     <TouchableOpacity
       style={styles.radioWrapper}

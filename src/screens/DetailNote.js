@@ -14,7 +14,10 @@ const DetailNote = ({navigation}) => {
     category: '',
     content: '',
   });
-  const [categorys, setCategorys] = useContext(CategoryContext);
+  
+  const { categ_lists, categ_id } = useContext(CategoryContext);
+  const [categorys, setCategorys] = categ_lists;
+
   const [notes, setNotes] = useContext(NoteContext);
 
   const route = useRoute();
