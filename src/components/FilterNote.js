@@ -58,6 +58,8 @@ const FilterNote = ({ search }) => {
       //console.log('filterNotes');
       //console.log(filteredNotes); // render 4 time when you click 3rd item of category
       
+    } else {
+      setFilterNotes(null);
     }
   }, [search, categoryById, notes]);
   //Show Filter NoteList By Search and Category

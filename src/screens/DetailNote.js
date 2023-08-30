@@ -59,7 +59,7 @@ const DetailNote = ({navigation}) => {
   const deleteCategoryItem =  async (id) => {
     const newNotes = notes.filter((note) => note.id != id);
     setNotes(newNotes);
-
+    
     AsyncStorage.setItem('notes', JSON.stringify(newNotes))
     .then(() => {
       alert('Successfully Removed.');
