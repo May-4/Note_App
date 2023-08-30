@@ -10,7 +10,7 @@ import { useIsFocused, useRoute } from '@react-navigation/native';
 import CategoryContext from '../hooks/context/categoryContext';
 
 
-const CategoryList = ({ refresh = false, updateCategId=null, type = null, }) => {
+const CategoryList = ({ refresh = false, updateCategId = null, type = null, }) => {
 
   const isFocused = useIsFocused();
 
@@ -26,7 +26,6 @@ const CategoryList = ({ refresh = false, updateCategId=null, type = null, }) => 
       const existingCategory = await AsyncStorage.getItem("categorys");
 
       const lists = existingCategory ? JSON.parse(existingCategory) : noteCategories;
-
       setCategorys(lists);
 
     } catch (error) {
@@ -42,15 +41,18 @@ const CategoryList = ({ refresh = false, updateCategId=null, type = null, }) => 
   // GEt Categorys from Async Storage
 
   useEffect(() => {
-    if (categorys.length) {
-      const lists = type ? categorys : [{ id: '-1', name: 'all' }, ...categorys];
-
-      setCategoryById( updateCategId ?? (categoryById.length==0 ? lists[0].id : categoryById) );
-      setCategLists(lists);
+    if (categorys.length == 0) {
+      setCategLists([{ id: '-1', name: 'all' }])
+      setCategoryById('-1');
+      return;
     }
-  }, [categorys, type, updateCategId ])
+    const lists = type ? categorys : [{ id: '-1', name: 'all' }, ...categorys];
+    setCategoryById(updateCategId ?? (categoryById.length == 0 ? lists[0].id : categoryById));
+    setCategLists(lists);
+
+  }, [categorys, type, updateCategId])
   // change category list depending on type  and Filter flatlist
-  
+
   const handleSelect = (id) => {
     setCategoryById(id)
   };
@@ -73,7 +75,7 @@ const CategoryList = ({ refresh = false, updateCategId=null, type = null, }) => 
       />
     )
   }
-  
+
   return (
     <View style={{ width: '85%' }}>
       <FlatList

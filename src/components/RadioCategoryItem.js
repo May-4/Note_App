@@ -1,14 +1,21 @@
 
-import { useContext } from 'react';
-import { StyleSheet, Text, TouchableOpacity, } from 'react-native';
-import CategoryContext from '../hooks/context/categoryContext';
+import { Alert, StyleSheet, Text, TouchableOpacity, } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 
 const RadioCategoryItem = ({ item, selectedId, onSelect }) => {
 
-
+  const navigateToHome = () => {
+    useNavigation().navigate('Home');
+  };
+  if (item.id == -1) {
+    alert('Please Add Category for your note');
+    navigateToHome();
+    return;
+  }
   const isSelected = (item.id === selectedId);
-  
+
+
   return (
     <TouchableOpacity
       style={styles.radioWrapper}
@@ -25,7 +32,7 @@ const RadioCategoryItem = ({ item, selectedId, onSelect }) => {
   )
 };
 const styles = StyleSheet.create({
-  
+
   radioWrapper: {
     flexDirection: 'row',
     marginRight: 24,
@@ -38,7 +45,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: '#AEAEB2',
-    
+
   },
   radioButtonSelected: {
     borderColor: '#5DB075',

@@ -6,8 +6,15 @@ import NoteContext from "../hooks/context/noteContext";
 const CreateButton = ({ newNote, navigation }) => {
 
   const [notes, setNotes] = useContext(NoteContext);
-  
+
   const addNote = async () => {
+
+    const hasEmptyProperties = Object.values(newNote).some(property => property === '');
+    if (hasEmptyProperties) {
+      alert('Please Fill Completely');
+      return;
+    } 
+    
     try {
       const noteList = [newNote, ...notes];
       await AsyncStorage.setItem('notes', JSON.stringify(noteList));

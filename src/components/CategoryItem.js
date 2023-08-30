@@ -89,6 +89,7 @@ const CategoryItem = ({ item, selectedId, onSelect }) => {
     );
   };
   const deleteCategoryItem = async (id) => {
+    
     const newCategorys = categorys.filter((category) => category.id != id);
     setCategorys(newCategorys);
 
